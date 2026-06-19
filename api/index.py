@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import statistics
+import numpy as np
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    # allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -68,7 +67,7 @@ def latency(payload: dict):
 
         result[region] = {
             "avg_latency": round(sum(latencies) / len(latencies), 2),
-            "p95_latency": round(statistics.quantiles(latencies, n=100)[94], 2),
+            "p95_latency": round(float(np.percentile(latencies, 95)), 2),
             "avg_uptime": round(sum(uptimes) / len(uptimes), 3),
             "breaches": sum(1 for r in rows if r["latency_ms"] > threshold)
         }
