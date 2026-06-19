@@ -83,6 +83,11 @@ def latency(payload: dict):
             "breaches": sum(1 for r in rows if r["latency_ms"] > threshold)
         }
 
-    response = JSONResponse(content=result)
+    response = JSONResponse(
+        content={
+            "regions": result
+        }
+    )
+
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
