@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import numpy as np
@@ -8,8 +8,10 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 DATA = [
@@ -52,6 +54,14 @@ DATA = [
     {"region":"amer","latency_ms":127.66,"uptime_pct":98.444},
     {"region":"amer","latency_ms":148.0,"uptime_pct":97.825},
 ]
+
+@app.options("/api/latency")
+def options_latency():
+    response = Response()
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
 
 @app.post("/api/latency")
 def latency(payload: dict):
