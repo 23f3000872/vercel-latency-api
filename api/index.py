@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 import numpy as np
 
 app = FastAPI()
@@ -72,4 +73,6 @@ def latency(payload: dict):
             "breaches": sum(1 for r in rows if r["latency_ms"] > threshold)
         }
 
-    return result
+    response = JSONResponse(content=result)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
